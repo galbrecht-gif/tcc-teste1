@@ -72,18 +72,6 @@ function AuthPage() {
     resolver: zodResolver(signUpSchema),
     defaultValues: { nome: "", email: "", password: "" },
   });
-
-  // Escuta o login do Google e redireciona automaticamente para a dashboard
-  useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) {
-        void navigate({ to: "/dashboard" });
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [navigate]);
-
   async function entrar(values: SignIn) {
     const { error } = await supabase.auth.signInWithPassword(values);
     if (error) {
@@ -135,7 +123,7 @@ function AuthPage() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/dashboard`,
+          redirectTo: `${window.location.origin}/auth`,
         },
       });
       if (error) throw error;
