@@ -12,8 +12,12 @@ type SignInOptions = {
 export const lovable = {
   auth: {
     signInWithOAuth: async (provider: "google" | "apple" | "microsoft" | "lovable", opts?: SignInOptions) => {
+      // Garante que a URL de retorno usa a origem atual do site (ex: https://tcc-teste4.vercel.app)
+      const currentOrigin = typeof window !== "undefined" ? window.location.origin : undefined;
+      const redirectUri = opts?.redirect_uri || currentOrigin;
+
       const result = await lovableAuth.signInWithOAuth(provider, {
-        redirect_uri: opts?.redirect_uri,
+        redirect_uri: redirectUri,
         extraParams: {
           ...opts?.extraParams,
         },
